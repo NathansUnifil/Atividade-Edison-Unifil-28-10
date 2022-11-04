@@ -1,0 +1,72 @@
+create table Pessoa
+(nom_pessoa varchar(40) not null,
+end_pessoa varchar(40) not null,
+cep_pessoa long primary key, 
+tel_pessoa varchar(40) not null,
+renda_pessoa double(30, 3) not null,
+sit_pessoa bigint not null);
+
+alter table Pessoa add constraint pk_pessoa primary key (cep_pessoa);
+
+create table Conta_Comum
+(nro_conta long primary key,
+dt_abertura date not null,
+dt_encerramento date not null,
+situação bigint check (situação == 1),
+senha bigint not null,
+saldo double check (saldo == 0);
+
+alter table Conta_Comum add constraint pk_conta primary key (nro_conta);
+
+CREATE TABLE Movimento
+(tipo_mov bigint not null,
+dt_mov date not null,
+hor_mov time not null,
+val_mov double(30, 3) not null);
+
+
+
+create table Pessoa_Fisica
+(cpf_pessoa long not null,
+rg_pessoa long not null);
+
+alter table Pessoa_Fisica add constraint pk_fisica primary key (cpf_pessoa, rg_pessoa);
+
+create table Pessoa_Juridica
+(cpfj_pessoa long not null);
+
+alter table Pessoa_Juridica add constraint pk_juridica primary key (cpfj_pessoa);
+
+create table Conta_Especial
+(limite_conta double(30, 3) not null);
+
+alter table Conta_Especial add constraint pk_especial primary key (limite_conta);
+
+create table Conta_Poupança
+(dt_aniversario date not null);
+
+alter table Conta_Poupança add constraint pk_poupanca primary key (dt_aniversario);
+
+alter table Pessoa add constraint fk_conta
+foreign key (cep_pessoa)
+REFERENCES Conta_Comum (nro_conta);
+
+alter table Pessoa add constraint fk_fisica
+foreign key (cpf_pessoa, rg_pessoa)
+REFERENCES Pessoa (cep_pessoa);
+
+alter table Pessoa add constraint fk_juridica
+foreign key (cpfj_pessoa) 
+REFERENCES Pessoa (cep_pessoa);
+
+alter table Conta_Comum add constraint fk_especial
+foreign key (limite_conta) 
+REFERENCES Pessoa (saldo);
+
+alter table Conta_Comum add constraint fk_poupanca
+foreign key (dt_aniversario) 
+REFERENCES Pessoa (dt_abertura);
+
+alter table Movimento add constraint fk_conta
+foreign key (dt_mov) 
+REFERENCES Pessoa (dt_encerramento);
